@@ -186,6 +186,43 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
 .lb { position: fixed; inset: 0; z-index: 50; background: var(--scrim); display: grid; place-items: center;
   padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); cursor: zoom-out; }
 .lb img { max-width: 100%; max-height: 100%; width: auto; height: auto; border-radius: 10px; }
+/* collection & missing */
+.deckwrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.deckwrap:hover, .deckwrap.wanted { border-color: var(--accent); }
+.deckwrap .deck { border: 0; background: none; }
+.deckwrap > .want { margin-right: 14px; }
+@media (max-width: 560px) { .deckwrap { grid-template-columns: 1fr; } .deckwrap > .want { justify-self: start; margin: 0 14px 12px; } }
+.want { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.want[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.want.big { padding: 6px 16px; font-size: 14px; }
+.prog { display: inline-block; width: 80px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; vertical-align: middle; }
+.prog i { display: block; height: 100%; background: var(--good); }
+.progrow { display: inline-flex; align-items: center; gap: 6px; }
+.own { font-family: var(--font-mono); font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); white-space: nowrap; }
+.own-ok { color: var(--good); border-color: var(--good); }
+.own-part { color: var(--accent); border-color: var(--accent); }
+.own-none { color: var(--muted); }
+.crow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.crow .cinfo { min-width: 0; }
+.crow.has .step input { color: var(--good); font-weight: 700; }
+.step { display: inline-flex; align-items: stretch; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.step button { width: 38px; min-height: 36px; border: 0; background: var(--surface-2); font-size: 18px; line-height: 1; cursor: pointer; color: var(--ink); }
+.step button:active { background: var(--accent-soft); }
+.step input { width: 46px; border: 0; border-inline: 1px solid var(--line); background: var(--surface); text-align: center; font-family: var(--font-mono); font-size: 15px; -moz-appearance: textfield; appearance: textfield; }
+.step input::-webkit-outer-spin-button, .step input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.lack { font-weight: 700; color: var(--bad); }
+.lack.ok { color: var(--good); }
+.wantrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
+.wantrow a { text-decoration: none; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .wantrow { grid-template-columns: minmax(0, 1fr) auto; } .wantrow .progrow { grid-column: 1; } }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 8px; padding: 6px 12px; font-weight: 600; cursor: pointer; font-size: 14px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.danger { color: var(--bad); }
+.btn.small { padding: 3px 10px; font-size: 13px; }
+.ta { width: 100%; min-height: 72px; margin: 8px 0; border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: var(--surface); font-family: var(--font-mono); font-size: 12px; word-break: break-all; resize: vertical; }
+.notice { border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 8px; padding: 12px; margin-top: 8px; }
+.notice p { margin: 0 0 8px; }
+.notice.bad { border-color: var(--bad); background: var(--red-soft); }
 .lb button { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); border: 0; border-radius: 999px; padding: 6px 14px; background: var(--surface); color: var(--ink); font-weight: 700; cursor: pointer; }
 @media (prefers-reduced-motion: no-preference) { .deck, details.card { transition: border-color .15s; } }
 </style>
@@ -196,6 +233,8 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
     <a class="brand" href="#decks"><b>鳴潮：對決 牌組庫</b><span id="stamp"></span></a>
     <nav class="tabs" aria-label="分頁">
       <a href="#decks" data-v="decks">牌組</a>
+      <a href="#missing" data-v="missing">缺牌</a>
+      <a href="#collection" data-v="collection">收藏</a>
       <a href="#meta" data-v="meta">環境</a>
       <a href="#cards" data-v="cards">卡牌</a>
       <a href="#about" data-v="about">說明</a>
@@ -246,8 +285,70 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
   }
 
   /* ---------------- deck list ---------------- */
-  var st = Object.assign({ q: "", group: "all", chars: [], result: false, tp: false }, store("filters") || {});
+  /* ---------------- my collection & wanted decks (stored in this browser) ---------------- */
+  var MY = { have: store("have") || {}, wants: store("wants") || [] };
+  MY.wants = MY.wants.filter(function (id) { return byId[id]; });
+  var miss = Object.assign({ mode: "sum", chars: true, showDone: false }, store("missOpts") || {});
+  function saveMy() { store("have", MY.have); store("wants", MY.wants); }
+  function haveOf(code) { return MY.have[code] || 0; }
+  function setHave(code, n) { n = Math.max(0, Math.min(99, n | 0)); if (n) MY.have[code] = n; else delete MY.have[code]; saveMy(); return n; }
+  function hasCollection() { for (var k in MY.have) return true; return false; }
+  function isWant(id) { return MY.wants.indexOf(id) >= 0; }
+  function toggleWant(id) { var i = MY.wants.indexOf(id); if (i >= 0) MY.wants.splice(i, 1); else MY.wants.push(id); saveMy(); return i < 0; }
+  function charCodes(d) {
+    var out = [];
+    d.chars.forEach(function (ch) { D.charCards.forEach(function (x) { if (x.char === ch) out.push(x.code); }); });
+    return out;
+  }
+  function deckNeeds(d, withChars) {
+    var need = {};
+    d.cards.forEach(function (c) { need[c.code] = (need[c.code] || 0) + c.n; });
+    if (withChars) charCodes(d).forEach(function (code) { need[code] = (need[code] || 0) + 1; });
+    return need;
+  }
+  function deckProgress(d) {
+    var need = deckNeeds(d, true), tot = 0, got = 0;
+    for (var k in need) { tot += need[k]; got += Math.min(need[k], haveOf(k)); }
+    return { got: got, tot: tot };
+  }
+  function ownBadge(code, n) {
+    var h = haveOf(code), cls = h >= n ? "own-ok" : (h > 0 ? "own-part" : "own-none");
+    return '<span class="own ' + cls + '" title="已有 ' + h + " 張，需要 " + n + ' 張">有 ' + h + "/" + n + "</span>";
+  }
+  function wantBtn(id, big) {
+    var on = isWant(id);
+    return '<button type="button" class="want' + (big ? " big" : "") + '" data-want="' + esc(id) + '" aria-pressed="' + on + '">' + (on ? "已加入想組" : "＋ 想組") + "</button>";
+  }
+  function progressBar(p) {
+    var pct = p.tot ? Math.round(p.got / p.tot * 100) : 0;
+    return '<span class="prog" title="已有 ' + p.got + " / " + p.tot + ' 張"><i style="width:' + pct + '%"></i></span><span class="num small">' + p.got + "/" + p.tot + "</span>";
+  }
+  // sync code: base64url of {v,h,w}
+  function encodeSync() {
+    var s = JSON.stringify({ v: 1, h: MY.have, w: MY.wants });
+    return btoa(unescape(encodeURIComponent(s))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function decodeSync(code) {
+    code = String(code || "").trim();
+    var m = code.match(/sync=([A-Za-z0-9_-]+)/);
+    if (m) code = m[1];
+    var b = code.replace(/-/g, "+").replace(/_/g, "/");
+    while (b.length % 4) b += "=";
+    var o = JSON.parse(decodeURIComponent(escape(atob(b))));
+    if (!o || o.v !== 1 || typeof o.h !== "object" || !Array.isArray(o.w)) throw new Error("bad");
+    var have = {};
+    for (var k in o.h) { var n = o.h[k] | 0; if (D.cards[k] && n > 0) have[k] = Math.min(99, n); }
+    return { have: have, wants: o.w.filter(function (id) { return byId[id]; }) };
+  }
+  function summarize(p) {
+    var kinds = 0, cards = 0;
+    for (var k in p.have) { kinds++; cards += p.have[k]; }
+    return kinds + " 種卡、" + cards + " 張，想組牌組 " + p.wants.length + " 套";
+  }
+
+  var st = Object.assign({ q: "", group: "all", chars: [], result: false, tp: false, wantOnly: false }, store("filters") || {});
   function deckMatches(d) {
+    if (st.wantOnly && !isWant(d.id)) return false;
     if (st.group !== "all" && d.group !== st.group) return false;
     if (st.result && !hasResult(d)) return false;
     if (st.tp && !d.tp01) return false;
@@ -276,22 +377,26 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
       '<div class="search"><input id="q" type="search" placeholder="搜尋牌組、作者、卡組碼或卡名（例：熾烈焰火、FuShe）" value="' + esc(st.q) + '" aria-label="搜尋牌組"></div>' +
       '<div class="row"><div class="seg" role="group" aria-label="分類">' + segs + "</div>" +
       '<label class="toggle"><input id="fres" type="checkbox"' + (st.result ? " checked" : "") + "> 有賽事成績</label>" +
-      '<label class="toggle"><input id="ftp" type="checkbox"' + (st.tp ? " checked" : "") + "> 用到 TP01</label></div>" +
+      '<label class="toggle"><input id="ftp" type="checkbox"' + (st.tp ? " checked" : "") + "> 用到 TP01</label>" +
+      '<label class="toggle"><input id="fwant" type="checkbox"' + (st.wantOnly ? " checked" : "") + "> 只看想組（" + MY.wants.length + "）</label></div>" +
       '<div class="row" role="group" aria-label="包含角色（可複選）">' + chips + "</div>" +
       '</div><div class="count" id="cnt"></div><div class="decks" id="list"></div>';
     var list = document.getElementById("list");
     function draw() {
       var rows = D.decks.filter(deckMatches);
       document.getElementById("cnt").textContent = "顯示 " + rows.length + " / " + D.decks.length + " 套";
+      var showProg = hasCollection();
       list.innerHTML = rows.length ? rows.map(function (d) {
         var res = d.result && hasResult(d) ? '<span class="pill">' + esc(d.result) + "</span>" : (d.record ? '<span class="pill">線上 ' + esc(d.record) + "（勝／負／和）</span>" : "");
-        return '<a class="deck" href="#deck-' + d.id.toLowerCase() + '"><div class="main">' +
+        return '<div class="deckwrap' + (isWant(d.id) ? " wanted" : "") + '"><a class="deck" href="#deck-' + d.id.toLowerCase() + '"><div class="main">' +
           '<div class="title"><span class="id">' + esc(groupLabel(d)) + "</span><b>" + esc(d.name) + "</b>" + (d.tp01 ? '<span class="pill tp">TP01</span>' : "") + "</div>" +
           '<div class="row">' + d.chars.map(charChip).join("") + "</div>" +
           '<div class="meta"><span>' + esc(d.author || "") + "</span>" + (d.date ? '<span class="mono">' + esc(d.date) + "</span>" : "") + (d.code ? '<span class="mono">' + esc(d.code) + "</span>" : "") + "</div>" +
           (res ? "<div>" + res + "</div>" : "") +
-          '</div><div class="side">' + cbar(d.colors) + cnums(d.colors) + "</div></a>";
-      }).join("") : '<div class="empty">沒有符合條件的牌組。試著減少角色篩選或清除搜尋。</div>';
+          '</div><div class="side">' + cbar(d.colors) + cnums(d.colors) +
+          (showProg ? '<div class="progrow"><span class="small muted">已有</span>' + progressBar(deckProgress(d)) + "</div>" : "") +
+          "</div></a>" + wantBtn(d.id) + "</div>";
+      }).join("") : '<div class="empty">' + (st.wantOnly && !MY.wants.length ? "還沒有想組的牌組。在牌組上按「＋ 想組」加入。" : "沒有符合條件的牌組。試著減少角色篩選或清除搜尋。") + "</div>";
       store("filters", st);
     }
     draw();
@@ -308,6 +413,15 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
     });
     document.getElementById("fres").addEventListener("change", function (e) { st.result = e.target.checked; draw(); });
     document.getElementById("ftp").addEventListener("change", function (e) { st.tp = e.target.checked; draw(); });
+    document.getElementById("fwant").addEventListener("change", function (e) { st.wantOnly = e.target.checked; draw(); });
+    list.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-want]");
+      if (!b) return;
+      toggleWant(b.dataset.want);
+      if (st.wantOnly) draw();
+      else { var on = isWant(b.dataset.want); b.setAttribute("aria-pressed", on); b.textContent = on ? "已加入想組" : "＋ 想組"; b.parentNode.classList.toggle("wanted", on); }
+      var fw = document.getElementById("fwant"); if (fw) fw.parentNode.lastChild.textContent = " 只看想組（" + MY.wants.length + "）";
+    });
   }
 
   /* ---------------- deck detail ---------------- */
@@ -335,7 +449,7 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
     var name = c.name || db.name;
     return '<details class="card edge-' + key + '"><summary>' +
       '<span class="qty">' + (extra.qty !== undefined ? extra.qty : "×" + c.n) + "</span>" +
-      '<span class="cname"><b>' + esc(name) + '</b><span class="id">' + esc(c.code) + "</span>" + types + "</span>" +
+      '<span class="cname"><b>' + esc(name) + '</b><span class="id">' + esc(c.code) + "</span>" + types + (extra.own && hasCollection() ? ownBadge(c.code, extra.own) : "") + "</span>" +
       stats(c.fee !== undefined ? c.fee : db.fee, c.speed !== undefined ? c.speed : db.speed, c.dmg !== undefined ? c.dmg : db.dmg) +
       '</summary><div class="cbody"><div class="cmedia">' + figure(c.code, name) + '<div class="ctext">' +
       '<div class="small muted">' + esc([c.char || db.char, db.tags || c.tags, db.rarity, db.product].filter(Boolean).join("・")) + "</div>" +
@@ -368,7 +482,7 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
       var cs = D.charCards.filter(function (x) { return x.char === ch; }).sort(function (a, b) { return a.level - b.level || (a.code < b.code ? -1 : 1); });
       return '<div class="cgroup"><h3>' + charChip(ch) + '<span class="small muted">' + cs.map(function (x) { return "Lv" + x.level + " " + x.code; }).join("　") + "</span></h3>" +
         cs.map(function (x) {
-          return '<details class="card edge-none"><summary><span class="qty">Lv' + x.level + '</span><span class="cname"><b>' + esc(ch) + '</b><span class="id">' + esc(x.code) + "</span></span>" +
+          return '<details class="card edge-none"><summary><span class="qty">Lv' + x.level + '</span><span class="cname"><b>' + esc(ch) + '</b><span class="id">' + esc(x.code) + "</span>" + (hasCollection() ? ownBadge(x.code, 1) : "") + "</span>" +
             '<span class="stats">' + esc(x.rarity || "") + "</span></summary>" +
             '<div class="cbody"><div class="cmedia">' + figure(x.code, ch + " Lv" + x.level) + '<div class="ctext"><div class="small muted">' + esc([x.attr, x.weapon, x.force].filter(Boolean).join("・")) + '</div><div class="effect">' + esc(x.effect) + "</div></div></div></div></details>";
         }).join("") + "</div>";
@@ -394,7 +508,7 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
       var cs = d.cards.filter(function (c) { return c.color === col; });
       if (!cs.length) return "";
       var n = cs.reduce(function (s, c) { return s + c.n; }, 0);
-      return '<div class="cgroup"><h3><span class="sw c-' + COLOR_KEY[col] + '"></span>' + col + '色 <span class="num muted">' + n + " 張</span></h3>" + cs.map(function (c) { return cardRow(c); }).join("") + "</div>";
+      return '<div class="cgroup"><h3><span class="sw c-' + COLOR_KEY[col] + '"></span>' + col + '色 <span class="num muted">' + n + " 張</span></h3>" + cs.map(function (c) { return cardRow(c, { own: c.n }); }).join("") + "</div>";
     }).join("");
     app.innerHTML =
       '<a class="back" href="#decks">← 牌組列表</a>' +
@@ -402,6 +516,9 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
       '<div class="eyebrow">' + esc(GROUP[d.group]) + "牌組・" + esc(groupLabel(d)) + "</div>" +
       "<h1>" + esc(d.name) + "</h1>" +
       '<div class="row">' + d.chars.map(charChip).join("") + (d.tp01 ? '<span class="pill tp">含 TP01 卡</span>' : "") + "</div>" +
+      '<div class="row" id="wantrow">' + wantBtn(d.id, true) +
+      (hasCollection() ? '<span class="progrow"><span class="small muted">收藏進度（含角色卡）</span>' + progressBar(deckProgress(d)) + "</span>" : '<span class="small muted">到「收藏」登記已有的卡，這裡就會顯示還缺幾張。</span>') +
+      (isWant(d.id) ? '<a class="small" href="#missing">看缺牌清單 →</a>' : "") + "</div>" +
       '<dl class="facts">' + facts + "</dl>" + same + "</section>" +
       '<div class="grid2"><section class="panel"><h2>打法與重點</h2><dl class="plan">' +
       (d.sections.length ? d.sections.map(function (s) { return "<div><dt>" + esc(s[0]) + "</dt><dd>" + esc(s[1]) + "</dd></div>"; }).join("") : '<div class="muted">作者沒有附打法說明。</div>') +
@@ -471,6 +588,251 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
     document.getElementById("ck").addEventListener("change", function (e) { cst.kind = e.target.value; draw(); });
   }
 
+  /* ---------------- collection ---------------- */
+  var COLOR_ORDER = { "紅": 1, "藍": 2, "綠": 3 };
+  function cardLabel(c) { return c.kind === "角色卡" ? c.name + " Lv" + c.level : c.name; }
+  function wantedNeeds() {
+    var need = {};
+    MY.wants.forEach(function (id) { var n = deckNeeds(byId[id], true); for (var k in n) need[k] = (need[k] || 0) + n[k]; });
+    return need;
+  }
+  function stepper(code) {
+    var h = haveOf(code);
+    return '<div class="step" data-code="' + esc(code) + '"><button type="button" data-step="-1" aria-label="減少一張">−</button>' +
+      '<input type="number" inputmode="numeric" min="0" max="99" value="' + h + '" aria-label="已有張數 ' + esc(code) + '">' +
+      '<button type="button" data-step="1" aria-label="增加一張">＋</button></div>';
+  }
+  function bindSteppers(root, after) {
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-step]");
+      if (!b) return;
+      var box = b.closest(".step"), code = box.dataset.code;
+      var n = setHave(code, haveOf(code) + Number(b.dataset.step));
+      box.querySelector("input").value = n;
+      after(code, box);
+    });
+    root.addEventListener("change", function (e) {
+      var inp = e.target.closest(".step input");
+      if (!inp) return;
+      var box = inp.closest(".step"), code = box.dataset.code;
+      inp.value = setHave(code, parseInt(inp.value, 10) || 0);
+      after(code, box);
+    });
+  }
+  function collectionStats() { var k = 0, n = 0; for (var c in MY.have) { k++; n += MY.have[c]; } return { kinds: k, cards: n }; }
+  var col = Object.assign({ q: "", color: "all", product: "all", kind: "all", owned: false, wanted: false }, store("colFilters") || {});
+  function renderCollection() {
+    var all = Object.keys(D.cards).sort().map(function (k) { return D.cards[k]; });
+    function opt(id, label, vals, cur) { return '<label class="toggle">' + label + ' <select id="' + id + '">' + vals.map(function (v) { return '<option value="' + esc(v[0]) + '"' + (v[0] === cur ? " selected" : "") + ">" + esc(v[1]) + "</option>"; }).join("") + "</select></label>"; }
+    app.innerHTML = '<div class="eyebrow">MY CARDS</div><h1>收藏</h1>' +
+      '<p class="lede">登記你手上每張卡的張數（不分異畫），牌組和缺牌頁會用它來比對。資料只存在這個瀏覽器，換裝置請用下方的「同步連結」。</p>' +
+      '<p class="count" id="colsum" style="margin-top:8px"></p>' +
+      '<section class="panel" style="margin:12px 0"><details class="fold" id="syncfold"><summary>備份與同步（換電腦或手機時用）</summary>' +
+      '<div class="stack" style="margin-top:10px">' +
+      '<div><h3>1. 從這台裝置帶走</h3><p class="small muted" style="margin:2px 0 8px">產生連結後傳給自己（LINE、Email 都可以），在另一台裝置打開就會詢問是否匯入。連結包含你的收藏和想組牌組。</p>' +
+      '<div class="row"><button type="button" class="btn primary" id="mklink">產生同步連結</button><button type="button" class="btn" id="dlbak">下載備份檔</button></div>' +
+      '<textarea class="ta" id="synclink" readonly hidden aria-label="同步連結"></textarea><div class="row"><button type="button" class="btn" id="cplink" hidden>複製連結</button></div></div>' +
+      '<div><h3>2. 匯入到這台裝置</h3><p class="small muted" style="margin:2px 0 8px">貼上同步連結或同步碼，或選擇備份檔。匯入會取代這台裝置目前的資料。</p>' +
+      '<textarea class="ta" id="syncin" placeholder="貼上同步連結或同步碼" aria-label="貼上同步連結或同步碼"></textarea>' +
+      '<div class="row"><button type="button" class="btn" id="readin">檢查內容</button><label class="btn">選擇備份檔<input type="file" id="bakfile" accept=".json,application/json" hidden></label></div>' +
+      '<div id="importbox"></div></div>' +
+      '<div><h3>3. 清空</h3><div class="row"><button type="button" class="btn danger" id="clearall">清空這台裝置的收藏與想組</button><span class="small muted" id="clearhint"></span></div></div>' +
+      "</div></details></section>" +
+      '<div class="controls"><div class="search"><input id="colq" type="search" placeholder="搜尋卡名、卡號或角色" aria-label="搜尋卡牌" value="' + esc(col.q) + '"></div><div class="row">' +
+      opt("colc", "顏色", [["all", "全部"], ["紅", "紅"], ["藍", "藍"], ["綠", "綠"]], col.color) +
+      opt("colp", "商品", [["all", "全部"], ["BP01", "BP01"], ["SD01", "SD01"], ["SD02", "SD02"], ["TP01", "TP01"]], col.product) +
+      opt("colk", "種類", [["all", "全部"], ["行動卡", "行動卡"], ["角色卡", "角色卡"]], col.kind) +
+      '<label class="toggle"><input id="colown" type="checkbox"' + (col.owned ? " checked" : "") + "> 只看已有</label>" +
+      '<label class="toggle"><input id="colwant" type="checkbox"' + (col.wanted ? " checked" : "") + "> 只看想組牌組用到的卡</label>" +
+      '</div></div><div class="count" id="colcnt"></div><div class="cgroup" id="collist"></div>';
+    function sum() {
+      var s = collectionStats();
+      document.getElementById("colsum").textContent = s.kinds ? "已登記 " + s.kinds + " 種卡、共 " + s.cards + " 張；想組牌組 " + MY.wants.length + " 套。" : "還沒有登記任何卡。用每張卡右邊的 ＋ 開始登記。";
+    }
+    function draw() {
+      var terms = col.q.toLowerCase().split(/\s+/).filter(Boolean);
+      var wn = col.wanted ? wantedNeeds() : null;
+      var rows = all.filter(function (c) {
+        if (col.color !== "all" && c.color !== col.color) return false;
+        if (col.product !== "all" && c.product.indexOf(col.product) < 0) return false;
+        if (col.kind !== "all" && c.kind !== col.kind) return false;
+        if (col.owned && !haveOf(c.code)) return false;
+        if (wn && !wn[c.code]) return false;
+        var hay = [c.code, c.name, c.char, c.cn, c.kind === "角色卡" ? "lv" + c.level : ""].join(" ").toLowerCase();
+        return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+      });
+      document.getElementById("colcnt").textContent = "顯示 " + rows.length + " / " + all.length + " 種";
+      var wneed = wantedNeeds();
+      document.getElementById("collist").innerHTML = rows.length ? rows.map(function (c) {
+        var key = COLOR_KEY[c.color] || "none";
+        var hint = wneed[c.code] ? '<span class="small muted">想組共需 ' + wneed[c.code] + "</span>" : "";
+        return '<div class="crow edge-' + key + (haveOf(c.code) ? " has" : "") + '"><div class="cinfo"><b>' + esc(cardLabel(c)) + '</b> <span class="id">' + esc(c.code) + "</span>" +
+          (c.product.indexOf("TP01") >= 0 ? ' <span class="pill tp">主題賽限定</span>' : "") +
+          '<div class="small muted">' + esc([c.kind === "角色卡" ? "角色卡" : c.char, c.color ? c.color + "色" : "", c.rarity].filter(Boolean).join("・")) + " " + hint + "</div></div>" + stepper(c.code) + "</div>";
+      }).join("") : '<div class="empty">' + (col.owned ? "還沒有登記任何卡，取消「只看已有」就能開始登記。" : col.wanted ? "還沒有想組的牌組。到「牌組」按「＋ 想組」加入。" : "沒有符合條件的卡牌。") + "</div>";
+      sum();
+      store("colFilters", col);
+    }
+    draw();
+    bindSteppers(document.getElementById("collist"), function (code, box) {
+      box.closest(".crow").classList.toggle("has", haveOf(code) > 0);
+      sum();
+    });
+    document.getElementById("colq").addEventListener("input", function (e) { col.q = e.target.value.trim(); draw(); });
+    [["colc", "color"], ["colp", "product"], ["colk", "kind"]].forEach(function (p) { document.getElementById(p[0]).addEventListener("change", function (e) { col[p[1]] = e.target.value; draw(); }); });
+    document.getElementById("colown").addEventListener("change", function (e) { col.owned = e.target.checked; draw(); });
+    document.getElementById("colwant").addEventListener("change", function (e) { col.wanted = e.target.checked; draw(); });
+    // sync tools
+    document.getElementById("mklink").addEventListener("click", function () {
+      var url = location.href.split("#")[0] + "#sync=" + encodeSync();
+      var ta = document.getElementById("synclink"); ta.value = url; ta.hidden = false;
+      document.getElementById("cplink").hidden = false; ta.focus(); ta.select();
+    });
+    document.getElementById("cplink").addEventListener("click", function () { copyText(document.getElementById("synclink").value, this, "複製連結"); });
+    document.getElementById("dlbak").addEventListener("click", function () {
+      var d = new Date(), stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+      var blob = new Blob([JSON.stringify({ v: 1, h: MY.have, w: MY.wants }, null, 1)], { type: "application/json" });
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "鳴潮對決_收藏_" + stamp + ".json";
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    });
+    function offerImport(p) {
+      document.getElementById("importbox").innerHTML = '<div class="notice"><p>要匯入的資料：' + esc(summarize(p)) + "<br>這台裝置目前：" + esc(summarize(MY)) + "</p>" +
+        '<div class="row"><button type="button" class="btn primary" id="doimport">匯入並取代目前資料</button><button type="button" class="btn" id="noimport">取消</button></div></div>';
+      document.getElementById("doimport").addEventListener("click", function () { MY.have = p.have; MY.wants = p.wants; saveMy(); renderCollection(); document.getElementById("colsum").textContent += "（已匯入）"; });
+      document.getElementById("noimport").addEventListener("click", function () { document.getElementById("importbox").innerHTML = ""; });
+    }
+    function badInput() { document.getElementById("importbox").innerHTML = '<div class="notice bad">看不懂這段內容。請貼上完整的同步連結（含 #sync= 後面整段），或改用備份檔。</div>'; }
+    document.getElementById("readin").addEventListener("click", function () { try { offerImport(decodeSync(document.getElementById("syncin").value)); } catch (e) { badInput(); } });
+    document.getElementById("bakfile").addEventListener("change", function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () { try { var o = JSON.parse(r.result); offerImport(decodeSync(btoa(unescape(encodeURIComponent(JSON.stringify(o)))))); } catch (err) { badInput(); } };
+      r.readAsText(f);
+    });
+    var armed = false;
+    document.getElementById("clearall").addEventListener("click", function () {
+      if (!armed) { armed = true; this.textContent = "再按一次確認清空"; document.getElementById("clearhint").textContent = "這個動作無法復原，建議先下載備份檔。"; return; }
+      MY.have = {}; MY.wants = []; saveMy(); renderCollection();
+    });
+  }
+  function copyText(text, btn, label) {
+    function done() { btn.textContent = "已複製"; setTimeout(function () { btn.textContent = label; }, 1500); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { btn.textContent = "請手動選取複製"; });
+    else btn.textContent = "請手動選取複製";
+  }
+
+  /* ---------------- missing cards ---------------- */
+  function computeMissing() {
+    var need = {}, by = {};
+    MY.wants.forEach(function (id) {
+      var n = deckNeeds(byId[id], miss.chars);
+      for (var k in n) {
+        need[k] = miss.mode === "sum" ? (need[k] || 0) + n[k] : Math.max(need[k] || 0, n[k]);
+        (by[k] = by[k] || []).push([id, n[k]]);
+      }
+    });
+    return Object.keys(need).map(function (k) {
+      var c = D.cards[k] || { code: k, name: k, kind: "行動卡", color: "" };
+      var h = haveOf(k);
+      return { code: k, card: c, need: need[k], have: h, lack: Math.max(0, need[k] - h), by: by[k] };
+    });
+  }
+  var MISS_GROUPS = [["角色卡", function (r) { return r.card.kind === "角色卡"; }], ["紅色行動卡", function (r) { return r.card.kind !== "角色卡" && r.card.color === "紅"; }],
+    ["藍色行動卡", function (r) { return r.card.kind !== "角色卡" && r.card.color === "藍"; }], ["綠色行動卡", function (r) { return r.card.kind !== "角色卡" && r.card.color === "綠"; }]];
+  function renderMissing() {
+    if (!MY.wants.length) {
+      app.innerHTML = '<div class="eyebrow">MISSING CARDS</div><h1>缺牌</h1><div class="empty" style="margin-top:16px">還沒有選擇想組的牌組。<br>到 <a href="#decks">牌組</a> 在想組的牌組按「＋ 想組」，再到 <a href="#collection">收藏</a> 登記已有的卡，這裡就會列出還缺的牌。</div>';
+      return;
+    }
+    app.innerHTML = '<div class="eyebrow">MISSING CARDS</div><h1>缺牌</h1>' +
+      '<p class="lede">比對想組的牌組和你在「收藏」登記的卡，列出還要補的牌。可以直接在這裡更新已有張數。</p>' +
+      '<section class="panel" style="margin-top:16px"><h2>想組的牌組 <span class="num muted">' + MY.wants.length + ' 套</span></h2><div class="decks" id="wantlist" style="margin-top:10px"></div></section>' +
+      '<div class="controls"><div class="row"><div class="seg" role="group" aria-label="計算方式">' +
+      '<button type="button" data-mode="sum" aria-pressed="' + (miss.mode === "sum") + '">同時組好全部</button>' +
+      '<button type="button" data-mode="max" aria-pressed="' + (miss.mode === "max") + '">輪流組</button></div>' +
+      '<label class="toggle"><input id="mchars" type="checkbox"' + (miss.chars ? " checked" : "") + "> 包含角色卡</label>" +
+      '<label class="toggle"><input id="mdone" type="checkbox"' + (miss.showDone ? " checked" : "") + "> 也顯示已湊齊的卡</label></div>" +
+      '<p class="small muted" style="margin:0" id="modehint"></p></div>' +
+      '<section class="panel"><div class="row"><h2>還缺的牌</h2><button type="button" class="btn viewseg" id="cpmiss">複製缺牌清單</button></div><p class="count" id="misssum" style="margin:6px 0 12px"></p><div class="stack" id="misslist"></div></section>';
+    function drawWants() {
+      document.getElementById("wantlist").innerHTML = MY.wants.map(function (id) {
+        var d = byId[id];
+        return '<div class="wantrow"><a href="#deck-' + id.toLowerCase() + '"><span class="id">' + esc(groupLabel(d)) + "</span> <b>" + esc(d.name) + "</b></a>" +
+          '<span class="progrow">' + progressBar(deckProgress(d)) + "</span>" +
+          '<button type="button" class="btn small" data-unwant="' + esc(id) + '">移除</button></div>';
+      }).join("");
+    }
+    function draw() {
+      document.getElementById("modehint").textContent = miss.mode === "sum"
+        ? "同時組好全部：同一張卡在不同牌組的張數相加，適合想讓每副牌各自完整、不用拆來拆去。"
+        : "輪流組：同一張卡取需要最多的那一套，適合一次只組一副、其他牌組共用卡片。";
+      var rows = computeMissing();
+      var tot = 0, got = 0, lack = 0, lackKinds = 0;
+      rows.forEach(function (r) { tot += r.need; got += Math.min(r.need, r.have); lack += r.lack; if (r.lack) lackKinds++; });
+      document.getElementById("misssum").textContent = "共需要 " + tot + " 張（" + rows.length + " 種），已有 " + got + " 張，還缺 " + lack + " 張（" + lackKinds + " 種）。";
+      document.getElementById("misslist").innerHTML = (lack === 0 && !miss.showDone ? '<div class="empty">卡都湊齊了，可以開始組牌！</div>' : "") + MISS_GROUPS.map(function (g) {
+        var rs = rows.filter(g[1]).filter(function (r) { return miss.showDone || r.lack > 0; }).sort(function (a, b) { return b.lack - a.lack || (a.code < b.code ? -1 : 1); });
+        if (!rs.length) return "";
+        var gl = rs.reduce(function (s, r) { return s + r.lack; }, 0);
+        return '<div class="cgroup"><h3>' + g[0] + ' <span class="num muted">缺 ' + gl + " 張</span></h3>" + rs.map(function (r) {
+          var key = COLOR_KEY[r.card.color] || "none";
+          return '<div class="crow edge-' + key + (r.lack ? "" : " has") + '"><div class="cinfo"><b>' + esc(cardLabel(r.card)) + '</b> <span class="id">' + esc(r.code) + "</span>" +
+            (r.card.product && r.card.product.indexOf("TP01") >= 0 ? ' <span class="pill tp">主題賽限定</span>' : "") +
+            '<div class="small"><span class="lack' + (r.lack ? "" : " ok") + '">' + (r.lack ? "缺 " + r.lack : "已湊齊") + "</span>" +
+            '<span class="muted">　需要 ' + r.need + "・已有 " + r.have + "</span></div>" +
+            '<div class="small muted">用於：' + r.by.map(function (x) { return esc(groupLabel(byId[x[0]])) + "×" + x[1]; }).join("、") + "</div></div>" + stepper(r.code) + "</div>";
+        }).join("") + "</div>";
+      }).join("");
+      store("missOpts", miss);
+    }
+    drawWants(); draw();
+    bindSteppers(document.getElementById("misslist"), function () { drawWants(); draw(); });
+    document.getElementById("wantlist").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-unwant]"); if (!b) return;
+      toggleWant(b.dataset.unwant);
+      if (!MY.wants.length) { renderMissing(); return; }
+      app.querySelector("#wantlist").closest("section").querySelector("h2 .num").textContent = MY.wants.length + " 套";
+      drawWants(); draw();
+    });
+    app.querySelectorAll("[data-mode]").forEach(function (b) {
+      b.addEventListener("click", function () { miss.mode = b.dataset.mode; app.querySelectorAll("[data-mode]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); draw(); });
+    });
+    document.getElementById("mchars").addEventListener("change", function (e) { miss.chars = e.target.checked; draw(); });
+    document.getElementById("mdone").addEventListener("change", function (e) { miss.showDone = e.target.checked; draw(); });
+    document.getElementById("cpmiss").addEventListener("click", function () {
+      var rows = computeMissing(), d = new Date();
+      var lines = ["《鳴潮：對決》缺牌清單（" + d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") + "）",
+        "想組：" + MY.wants.map(function (id) { return groupLabel(byId[id]) + " " + byId[id].name; }).join("、"),
+        "計算方式：" + (miss.mode === "sum" ? "同時組好全部（張數相加）" : "輪流組（取最多的一套）") + (miss.chars ? "，含角色卡" : "，不含角色卡")];
+      var total = 0;
+      MISS_GROUPS.forEach(function (g) {
+        var rs = rows.filter(g[1]).filter(function (r) { return r.lack > 0; }).sort(function (a, b) { return a.code < b.code ? -1 : 1; });
+        if (!rs.length) return;
+        lines.push("", "【" + g[0] + "】");
+        rs.forEach(function (r) { total += r.lack; lines.push(r.code + " " + cardLabel(r.card) + " ×" + r.lack); });
+      });
+      lines.push("", total ? "共缺 " + total + " 張" : "全部湊齊");
+      copyText(lines.join("\n"), this, "複製缺牌清單");
+    });
+  }
+
+  /* ---------------- sync link import ---------------- */
+  function renderSync(code) {
+    var p;
+    try { p = decodeSync(code); } catch (e) { p = null; }
+    function leave() { try { history.replaceState(null, "", location.pathname + location.search + "#collection"); } catch (e) {} go("#collection"); }
+    if (!p) {
+      app.innerHTML = '<div class="eyebrow">SYNC</div><h1>同步連結無法讀取</h1><div class="notice bad" style="margin-top:16px">這個連結可能不完整，請回到原本的裝置重新產生並完整複製。</div><p><a href="#collection">前往收藏</a></p>';
+      return;
+    }
+    app.innerHTML = '<div class="eyebrow">SYNC</div><h1>匯入同步資料</h1>' +
+      '<div class="notice" style="margin-top:16px"><p>連結裡的資料：' + esc(summarize(p)) + "<br>這台裝置目前：" + esc(summarize(MY)) + "</p>" +
+      '<p class="small muted">匯入後會取代這台裝置目前的收藏與想組牌組。</p>' +
+      '<div class="row"><button type="button" class="btn primary" id="syncyes">匯入並取代</button><button type="button" class="btn" id="syncno">不要匯入</button></div></div>';
+    document.getElementById("syncyes").addEventListener("click", function () { MY.have = p.have; MY.wants = p.wants; saveMy(); leave(); });
+    document.getElementById("syncno").addEventListener("click", leave);
+  }
+
   /* ---------------- meta ---------------- */
   function pct(x) { return (x * 100).toFixed(1) + "%"; }
   function lineupTable(rows, matches, opts) {
@@ -511,7 +873,8 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
   /* ---------------- about ---------------- */
   function renderAbout() {
     app.innerHTML = '<div class="eyebrow">ABOUT</div><h1>說明與來源</h1><p class="lede">本頁由 Excel 研究檔「鳴潮對決_牌組研究」產生的靜態快照，資料更新到 ' + esc(D.generated) + "。</p>" +
-      '<div class="stack" style="margin-top:16px"><section class="panel"><h2>資料日期與注意事項</h2><dl class="plan">' +
+      '<div class="stack" style="margin-top:16px"><section class="panel"><h2>收藏與缺牌資料存在哪裡</h2><p style="margin:6px 0 0">你在「收藏」登記的卡和選的想組牌組，只存在目前這個瀏覽器，不會上傳到任何地方。每台電腦、每支手機各存一份；換裝置時到「收藏 → 備份與同步」產生同步連結，或下載備份檔。清除瀏覽器的網站資料會一併清掉，建議偶爾下載備份。</p></section>' +
+      '<section class="panel"><h2>資料日期與注意事項</h2><dl class="plan">' +
       D.notes.map(function (n) { return "<div><dt>" + esc(n[0]) + "</dt><dd>" + esc(n[1]) + "</dd></div>"; }).join("") +
       '</dl></section><section class="panel"><h2>資料來源</h2><ul class="list">' +
       D.sources.map(function (s) { return "<li>" + link(s[1], s[0]) + "</li>"; }).join("") + "</ul></section></div>";
@@ -520,10 +883,13 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
   /* ---------------- router ---------------- */
   function route() {
     var h = (current || "#decks").slice(1);
-    var view = h.indexOf("deck-") === 0 ? "decks" : h;
-    if (["decks", "meta", "cards", "about"].indexOf(view) < 0) view = "decks";
+    var view = h.indexOf("deck-") === 0 ? "decks" : (h.indexOf("sync=") === 0 ? "collection" : h);
+    if (["decks", "missing", "collection", "meta", "cards", "about"].indexOf(view) < 0) view = "decks";
     document.querySelectorAll(".tabs a").forEach(function (a) { if (a.dataset.v === view) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-    if (h.indexOf("deck-") === 0) renderDeck(h.slice(5).toUpperCase());
+    if (h.indexOf("sync=") === 0) renderSync(h.slice(5));
+    else if (h.indexOf("deck-") === 0) renderDeck(h.slice(5).toUpperCase());
+    else if (view === "missing") renderMissing();
+    else if (view === "collection") renderCollection();
     else if (view === "meta") renderMeta();
     else if (view === "cards") renderCards();
     else if (view === "about") renderAbout();
@@ -547,6 +913,17 @@ footer { color: var(--muted); font-size: 12px; padding-block: 24px; border-top: 
     }
     var z = e.target.closest("[data-zoom]");
     if (z) openLightbox(z.currentSrc || z.src, z.alt);
+    var w = e.target.closest("[data-want]");
+    if (w && !w.closest("#list") && !w.closest("#wantlist")) {
+      var on = toggleWant(w.dataset.want);
+      w.setAttribute("aria-pressed", on); w.textContent = on ? "已加入想組" : "＋ 想組";
+      var row = document.getElementById("wantrow");
+      if (row) {
+        var lk = row.querySelector('a[href="#missing"]');
+        if (on && !lk) row.insertAdjacentHTML("beforeend", '<a class="small" href="#missing">看缺牌清單 →</a>');
+        if (!on && lk) lk.remove();
+      }
+    }
   });
   var lb = document.getElementById("lb"), lbimg = document.getElementById("lbimg");
   function openLightbox(src, alt) { lbimg.src = src; lbimg.alt = alt || ""; lb.hidden = false; document.getElementById("lbclose").focus(); }
